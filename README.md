@@ -2,10 +2,10 @@
 
 View Pokemon cards by set or search for your favorites.
 
-[App Store](https://pokecards-app.web.app)
+[App Store](https://pokecards-app.web.app) (in review)
 <br/>
 
-[Play Store](https://pokecards-app.web.app)
+[Play Store](https://pokecards-app.web.app) (in review)
 <br/>
 
 [Website](https://pokecards-app.web.app)
@@ -13,7 +13,7 @@ View Pokemon cards by set or search for your favorites.
 
 ## Tools
 
-Hybrid App built using [Ionic](https://ionicframework.com/docs/components), [Capacitor](https://capacitorjs.com/), & [Angular](https://angular.io/)
+Hybrid App built using [Ionic](https://ionicframework.com/docs/components), [Capacitor](https://capacitorjs.com), [Angular](https://angular.io), & [Firebase](https://console.firebase.google.com)
 
 Data comes from the [Pokemon TCG Developers API](https://pokemontcg.io/)
 
