@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Filter</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="close()" [disabled]="disableClose">
+        <ion-icon slot="icon-only" name="arrow-redo"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Rarity Filters</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let filter of filters">
+      <ion-checkbox slot="start" color="primary" [(ngModel)]="filter[label(filter)]"></ion-checkbox>
+      <ion-label>{{ label(filter) }}</ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>App</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="openInfoModal()">
+        <ion-icon slot="icon-only" name="information-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Theme</ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-toggle color="primary" (ionChange)="toggleDarkMode()" [checked]="darkMode"></ion-toggle>
+      <ion-label style="margin-left: 12px">Dark Mode</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-select [value]="theme" (ionChange)="onSelect($event)">
+        <ion-select-option *ngFor="let option of themeOptions" color="primary" [value]="option.value">
+          {{ option.label }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+
+  <br><br>
+
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Saved</ion-label>
+    </ion-list-header>
+  </ion-list>
+  <div class="card-container">
+    <ion-card *ngFor="let card of saved$ | async" [routerLink]="'/card/' + card.id" [state]="{ data: card }">
+      <ion-img [src]="card.images.small"></ion-img>
+    </ion-card>
+  </div>
+  <ion-card *ngIf="nothingSaved">
+    <ion-card-content>
+      <p style="text-align: center;">Nothing Saved!</p>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

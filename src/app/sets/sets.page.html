@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Sets</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="reorder()">
+        <ion-icon slot="icon-only" name="swap-vertical" [class]="reverse ? 'flipped' : ''"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list style="max-width: 777px; margin: 0 auto;">
+    <ion-item *ngFor="let set of sets$ | async" [routerLink]="'/set/' + set.id" detail="false" lines="none">
+      <ion-img [src]="set.images.logo" style="margin: auto"></ion-img>
+      <div *ngIf="set.name === 'Shiny Vault'" class="vault">Vault</div>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

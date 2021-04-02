@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ card?.name }} - {{ card?.set.name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()">
+        <ion-icon slot="icon-only" [name]="saved ? 'heart' : 'heart-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-img [src]="card?.images.large" class="widescreen-card"></ion-img>
+
+  <ion-card *ngIf="card" class="widescreen-card">
+    <ion-img [src]="card.set.images.logo" style="height: 120px; margin-top: 8px;"></ion-img>
+    <ion-card-content>
+      <p>{{ card.rarity }}</p>
+      <p>Released: {{ card.set.releaseDate | date }}</p>
+      <br>
+      <ion-button *ngIf="card.tcgplayer.prices.holofoil" expand="block" [href]="card.tcgplayer.url">
+        Purchase {{ card.tcgplayer.prices.holofoil.low | currency }} - {{ card.tcgplayer.prices.holofoil.high | currency }}
+      </ion-button>
+      <ion-button *ngIf="card.tcgplayer.prices.normal" expand="block" [href]="card.tcgplayer.url">
+        Purchase {{ card.tcgplayer.prices.normal.low | currency }} - {{ card.tcgplayer.prices.normal.high | currency }}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <br><br><br><br>
+
+  <ion-button *ngIf="!showRelated" color="tertiary" expand="full" (click)="loadRelated()">
+    Show Related Cards
+  </ion-button>
+
+  <ion-card
+    *ngFor="let relatedCard of relatedCards$ | async"
+    [routerLink]="'/card/' + relatedCard.id"
+    [state]="{ data: relatedCard }"
+    class="widescreen-card">
+    <ion-img [src]="relatedCard.images.large"></ion-img>
+  </ion-card>
+
+  <br><br><br><br>
+
+</ion-content>

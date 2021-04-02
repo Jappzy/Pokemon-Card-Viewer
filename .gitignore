@@ -17,15 +17,26 @@ $RECYCLE.BIN/
 log.txt
 npm-debug.log*
 
+.firebaserc
+firebase.json
+firebase-analytics.html
+
 /.idea
 /.ionic
 /.sass-cache
 /.sourcemaps
 /.versions
 /.vscode
+/.firebase
+
 /coverage
 /dist
 /node_modules
 /platforms
 /plugins
 /www
+/e2e
+/android
+/ios
+/src/environments
+/src/assets/app-ads.txt

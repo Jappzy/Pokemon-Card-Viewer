@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ setName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="openFilters()" [disabled]="disabledFilters">
+        <ion-icon slot="icon-only" name="options"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="card-container">
+    <ion-card *ngFor="let card of set$ | async" [routerLink]="'/card/' + card.id" [state]="{ data: card }">
+      <img *ngIf="!loadedImages[card.id]" src="assets/pokemon-card-placeholder.png" width="240" />
+      <ion-img [src]="card.images.small" (ionImgDidLoad)="imageLoaded(card.id)"></ion-img>
+    </ion-card>
+  </div>
+
+</ion-content>
