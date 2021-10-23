@@ -15,6 +15,7 @@
     <ion-item *ngFor="let set of sets$ | async" [routerLink]="'/set/' + set.id" detail="false" lines="none">
       <ion-img [src]="set.images.logo" style="margin: auto"></ion-img>
       <div *ngIf="set.name === 'Shiny Vault'" class="vault">Vault</div>
+      <div *ngIf="set.name === 'Celebrations: Classic Collection'" class="vault">Classic</div>
     </ion-item>
   </ion-list>
 

@@ -47,7 +47,7 @@ export class CardService {
   }
 
   getSets(): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${this.baseUrl}/sets`, { headers: { 'X-Api-Key': this.apiKey }});
+    return this.http.get<ApiResponse>(`${this.baseUrl}/sets?orderBy=releaseDate`, { headers: { 'X-Api-Key': this.apiKey }});
   }
 
   getSet(id: string): Observable<ApiResponse> {
