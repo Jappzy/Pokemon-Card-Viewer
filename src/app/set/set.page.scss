@@ -1,0 +1,45 @@
+ion-badge {
+    margin: auto 8px;
+}
+
+ion-toggle {
+    width: 60px;
+    // --background: gray !important;
+    // --background-checked: gray !important;
+}
+
+// ion-toggle.toggle-icon {
+//     background: gray !important;
+// }
+
+// ion-toggle.toggle-checked {
+//     --background-checked: gray !important;
+// }
+
+ion-toggle.toggle-checked::before {
+    position: absolute;
+
+    top: 12px;
+    left: 16px;
+
+    content: "Order";
+
+    color: white;
+    font-size: 12px;
+
+    z-index: 1;
+}
+
+ion-toggle::before {
+    position: absolute;
+
+    top: 12px;
+    left: 40px;
+
+    content: "Price";
+
+    color: white;
+    font-size: 12px;
+
+    z-index: 1;
+}

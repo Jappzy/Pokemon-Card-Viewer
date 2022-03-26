@@ -4,15 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { FilterModalComponent } from './filter-modal.component';
+import { HomePageRoutingModule } from './home-routing.module';
+
+import { HomePage } from './home.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    IonicModule
+    IonicModule,
+    HomePageRoutingModule
   ],
-  declarations: [FilterModalComponent],
-  exports: [FilterModalComponent]
+  declarations: [HomePage]
 })
-export class FilterModalModule {}
+export class HomePageModule {}

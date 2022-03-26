@@ -3,9 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { CardService } from '../services/card.service';
-import { ApiResponse, Card } from '../types';
-import { FilterModalComponent } from '../filter-modal/filter-modal.component';
-import { ModalController } from '@ionic/angular';
+import { Card, Set, RaritiesList } from '../types';
 
 @Component({
   selector: 'app-set',
@@ -14,66 +12,112 @@ import { ModalController } from '@ionic/angular';
 })
 export class SetPage implements OnInit {
 
-  set$: Observable<Card[]>;
-  setName: string;
+  setCards$: Observable<Card[]>;
+  set: Set;
   loadedImages: any = {};
+  showPrice: boolean = false;
+  showRarityPopover: boolean = false;
+  sort: 'number' | 'price' = 'number';
+  filteredCardCount: number;
 
-  filters$: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  sortChange$: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  filters$: BehaviorSubject<any> = new BehaviorSubject({});
   disabledFilters: boolean;
+  rarityOptions: string[];
+  rarityOptionsSelection: any = {};
+
+  randy: string;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private cardService: CardService,
-    private modalController: ModalController
+    private cardService: CardService
   ) { }
 
   ngOnInit() {
+
+    this.randy = `${Math.random() * 100}`.substring(0, 2);
+
+    this.showPrice = localStorage.getItem('showPrice') === 'true';
+    this.sort = localStorage.getItem('cardSort') === 'number' ? 'number' : 'price';
 
     const getCards$ = this.route.paramMap
       .pipe(
         map(params => params.get('id')),
         switchMap(id => this.cardService.getSet(id)),
-        map((res: ApiResponse) => res.data),
         tap((cards: Card[]) => {
+
           if (!cards?.length) {
-            this.router.navigateByUrl('/tabs/sets')
-          } else {
-            this.setName = cards[0].set.name;
-            const filters = cards.reduce((acc, val) => {
-              if (!acc.find(x => x[val.rarity])) acc.push({ [val.rarity]: true });
-              return acc;
-            }, []);
-            this.disabledFilters = filters.length < 2;
-            this.filters$.next(filters);
+            return this.router.navigateByUrl('/')
           }
+
+          this.set = cards[0].set;
+          const filters = cards.reduce((acc, val) => {
+            if (!acc.find(x => x[val.rarity])) acc.push({ [val.rarity]: true });
+            return acc;
+          }, []);
+          this.disabledFilters = filters.length < 2;
+
+          this.rarityOptionsSelection = {};       
+          filters.forEach(f => this.rarityOptionsSelection[Object.keys(f)[0]] = true);
+
+          this.rarityOptions = RaritiesList.filter(x => this.rarityOptionsSelection[x] !== undefined);
+
+          this.filters$.next(this.rarityOptionsSelection);
         })
       );
 
-    this.set$ = combineLatest([ getCards$, this.filters$ ])
+    this.setCards$ = combineLatest([ getCards$, this.sortChange$, this.filters$ ])
       .pipe(
-        map(([ cards, filters ]) => {
-          return cards.filter(card => filters.find(x => x[card.rarity]));
+        map(([ cards, sort, filters ]) => {
+
+          const filteredCards = cards.filter(card => filters[card.rarity]);
+
+          this.filteredCardCount = filteredCards.length;
+
+          return this.sort === 'price'
+            ? filteredCards.sort((a, b) => this.priceLabel(b) - this.priceLabel(a))
+            : filteredCards.sort((a, b) => parseInt(a.number, 10) - parseInt(b.number, 10))
         })
       );
 
-  }
-
-  async openFilters() {
-    const modal = await this.modalController.create({
-      component: FilterModalComponent,
-      componentProps: {
-        filters: this.filters$.value
-      }
-    });
-    await modal.present();
-    const { data } = await modal.onWillDismiss();
-    
-    if (data?.filters) this.filters$.next(data.filters);
   }
 
   imageLoaded(id: string) {
     this.loadedImages[id] = true;
+  }
+
+  toggleRarityPopover() {
+    this.showRarityPopover = !this.showRarityPopover;
+  }
+
+  rarityFilterChange(rarity: string) {
+    this.rarityOptionsSelection[rarity] = !this.rarityOptionsSelection[rarity];
+    this.filters$.next(this.rarityOptionsSelection);
+  }
+
+  changeSort() {
+    this.sort = this.sort === 'price' ? 'number' : 'price';
+    this.sortChange$.next([]);
+    localStorage.setItem('cardSort', this.sort);
+  }
+
+  priceLabel(card: Card) {
+    if (card.tcgplayer?.prices) {
+      const prices = card.tcgplayer.prices;
+      const key = Object.keys(prices)[0];
+      if (!key) return 0;
+      return prices[key].market;
+    } else if (card.cardmarket?.prices) {
+      return card.cardmarket.prices.averageSellPrice;
+    } else {
+      return 0;
+    }
+  }
+
+  togglePrice() {
+    this.showPrice = !this.showPrice;
+    localStorage.setItem('showPrice', `${this.showPrice}`);
   }
 
 }

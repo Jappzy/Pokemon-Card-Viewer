@@ -19,7 +19,7 @@ export class SetsPage implements OnInit {
 
   ngOnInit() {
     this.sets$ = combineLatest([
-      this.cardService.getSets().pipe(map((res: any) => res.data.reverse())),
+      this.cardService.getSets().pipe(map((sets: Set[]) => sets.reverse())),
       this.reverse$
     ])
     .pipe(

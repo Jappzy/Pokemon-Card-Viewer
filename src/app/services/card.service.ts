@@ -3,30 +3,10 @@ import { Injectable } from '@angular/core';
 
 import { Plugins } from '@capacitor/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { ApiResponse, Card } from '../types';
-
-import * as base1 from '../../assets/sets/base1.json';
-import * as base2 from '../../assets/sets/base2.json';
-import * as base3 from '../../assets/sets/base3.json';
-import * as base4 from '../../assets/sets/base4.json';
-import * as base5 from '../../assets/sets/base5.json';
-import * as base6 from '../../assets/sets/base6.json';
-import * as basep from '../../assets/sets/basep.json';
-import * as gym1 from '../../assets/sets/gym1.json';
-import * as gym2 from '../../assets/sets/gym2.json';
-
-import * as neo1 from '../../assets/sets/neo1.json';
-import * as neo2 from '../../assets/sets/neo2.json';
-import * as neo3 from '../../assets/sets/neo3.json';
-import * as neo4 from '../../assets/sets/neo4.json';
-import * as sil from '../../assets/sets/sil.json';
-
-import * as swsh4 from '../../assets/sets/swsh4.json';
-import * as swsh5 from '../../assets/sets/swsh5.json';
-import * as swsh45 from '../../assets/sets/swsh45.json';
-import * as swsh45sv from '../../assets/sets/swsh45sv.json';
+import { ApiResponse, Card, Set } from '../types';
 
 const { Storage } = Plugins;
 
@@ -37,71 +17,56 @@ export class CardService {
 
   baseUrl = environment.cardBaseUrl;
   apiKey = environment.cardApiKey;
+  headers = { headers: { 'X-Api-Key': this.apiKey } };
 
   saved: BehaviorSubject<any[]>;
 
   constructor(private http: HttpClient) { }
 
   getCard(id: string): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${this.baseUrl}/cards/${id}`, { headers: { 'X-Api-Key': this.apiKey }});
+    return this.http.get<ApiResponse>(`${this.baseUrl}/cards/${id}`, this.headers);
   }
 
-  getSets(): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${this.baseUrl}/sets?orderBy=releaseDate`, { headers: { 'X-Api-Key': this.apiKey }});
+  getSets(): Observable<Set[]> {
+    return this.http
+      .get<ApiResponse>(`${this.baseUrl}/sets?orderBy=releaseDate`, this.headers)
+      .pipe(
+        map((res: ApiResponse) => res.data)
+      );
   }
 
-  getSet(id: string): Observable<ApiResponse> {
+  getRarities(): Observable<any[]> {
+    return this.http
+      .get<ApiResponse>(`${this.baseUrl}/rarities`, this.headers)
+      .pipe(
+        map((res: ApiResponse) => res.data)
+      );
+  }
 
-    switch(id) {
-      case 'base1':
-        return of((base1 as any).default);
-      case 'base2':
-        return of((base2 as any).default);
-      case 'base3':
-        return of((base3 as any).default);
-      case 'base4':
-        return of((base4 as any).default);
-      case 'base5':
-        return of((base5 as any).default);
-      case 'base6':
-        return of((base6 as any).default);
-      case 'basep':
-        return of((basep as any).default);
-      case 'gym1':
-        return of((gym1 as any).default);
-      case 'gym2':
-        return of((gym2 as any).default);
+  getSet(id: string): Observable<Card[]> {
+    return this.http.get<ApiResponse>(`${this.baseUrl}/cards?q=set.id:${id}&page=1&pageSize=250`, this.headers)
+      .pipe(
+        switchMap((res: ApiResponse) => {
+          const { data } = res;
 
-      case 'neo1':
-        return of((neo1 as any).default);
-      case 'neo2':
-        return of((neo2 as any).default);
-      case 'neo3':
-        return of((neo3 as any).default);
-      case 'neo4':
-        return of((neo4 as any).default);
-      case 'sil':
-        return of((sil as any).default);
-
-      case 'swsh4':
-        return of((swsh4 as any).default);
-      case 'swsh5':
-        return of((swsh5 as any).default);
-      case 'swsh45':
-        return of((swsh45 as any).default);
-      case 'swsh45sv':
-        return of((swsh45sv as any).default);
-
-      default:
-        return this.http.get<ApiResponse>(`${this.baseUrl}/cards?q=set.id:${id}`, { headers: { 'X-Api-Key': this.apiKey }});
-
-    }
-
+          if (res.count < res.totalCount && res.page == 1) {
+            // get next page and add to end of data
+            return this.http.get<ApiResponse>(`${this.baseUrl}/cards?q=set.id:${id}&page=2&pageSize=250`, this.headers)
+              .pipe(
+                map(page2 => [ ...data, ...page2.data ])
+              );
+          } else {
+            return of(data);
+          }
+        })
+      );
   }
 
   search(term: string): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${this.baseUrl}/cards?q=name:"${term}*"&pageSize=20`, { headers: { 'X-Api-Key': this.apiKey }});
+    return this.http.get<ApiResponse>(`${this.baseUrl}/cards?q=name:"${term}*"&pageSize=20`, this.headers);
   }
+
+  /* Deprecated save functionality */
 
   setSaved(cards: Card[] = []) {
     this.saved = new BehaviorSubject(cards);

@@ -1,23 +1,64 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
+
+    <ng-template #loadingToolbar>
+      <ion-title>Loading...</ion-title>
+    </ng-template>
+
+    <ion-title *ngIf="set; else loadingToolbar" class="ion-hide-md-down">
+      {{ set.name }} 
+      <ion-text color="medium">
+        <sub>{{ set.series }} | {{ set.releaseDate | date }}</sub>
+      </ion-text>
+    </ion-title>
+
+    <ion-buttons *ngIf="set" slot="start">
+      <ion-menu-button class="ion-hide-md-up"></ion-menu-button>
     </ion-buttons>
-    <ion-title>{{ setName }}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button color="primary" (click)="openFilters()" [disabled]="disabledFilters">
+
+    <ion-buttons *ngIf="set" slot="end">
+      <ion-badge  color="primary"><span *ngIf="filteredCardCount != set.total">{{ filteredCardCount }} / </span> {{ set.total }} cards </ion-badge>
+
+      <ion-button [color]="showPrice ? 'success' : 'medium'" (click)="togglePrice()">
+        <ion-icon slot="icon-only" name="cash"></ion-icon>
+      </ion-button>
+
+      <ion-toggle [checked]="sort === 'number'" color="medium" (ionChange)="changeSort()"></ion-toggle>
+
+      <ion-button [id]="'rarity-button_' + randy" color="primary" [disabled]="disabledFilters" (click)="toggleRarityPopover()">
         <ion-icon slot="icon-only" name="options"></ion-icon>
       </ion-button>
+
+      <ion-popover [trigger]="'rarity-button_' + randy" showBackdrop="false" (didDismiss)="toggleRarityPopover()">
+        <ng-template>
+          <ion-content>
+            <ion-list lines="none">
+              <ion-item *ngFor="let rarity of rarityOptions">
+                <ion-checkbox slot="start" [checked]="rarityOptionsSelection[rarity]" (ionChange)="rarityFilterChange(rarity)"></ion-checkbox>
+                <ion-label>{{ rarity }}</ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
+  <h2 *ngIf="set" class="ion-hide-md-up" style="font-weight: 700; font-size: 22px; margin: 12px 12px 0px;">{{ set.name }}</h2>
+
   <div class="card-container">
-    <ion-card *ngFor="let card of set$ | async" [routerLink]="'/card/' + card.id" [state]="{ data: card }">
+    <ion-card *ngFor="let card of setCards$ | async" >
+      <!-- [routerLink]="'/card/' + card.id" [state]="{ data: card }" -->
       <ion-img [src]="card.images.small" (ionImgDidLoad)="imageLoaded(card.id)"></ion-img>
       <img *ngIf="!loadedImages[card.id]" src="assets/pokemon-card-placeholder.png" width="240" />
+      <div *ngIf="showPrice" style="text-align: center; padding: 4px;">
+        <a *ngIf="card.tcgplayer?.url" [href]="card.tcgplayer.url" target="_blank">{{ priceLabel(card) | currency }}</a>
+        <a *ngIf="!card.tcgplayer && card.cardmarket?.url" [href]="card.cardmarket.url" target="_blank">{{ priceLabel(card) | currency }}</a>
+      </div>
     </ion-card>
   </div>
 

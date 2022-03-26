@@ -9,6 +9,7 @@ export interface ApiResponse {
 export interface Card {
     artist?: string;
     attacks?: any[];
+    cardmarket: TcgPlayer;
     convertedRetreatCost?: number;
     evolvesFrom: string | null | undefined;
     flavorText?: string;
@@ -26,7 +27,7 @@ export interface Card {
     set: Set;
     subtypes?: string[];
     supertype?: string;
-    tcgplayer: TcgPlayer;
+    tcgplayer?: TcgPlayer;
     types?: string[];
     weaknesses?: any[];
 }
@@ -65,3 +66,33 @@ export const Themes = {
     Firered: { label: 'Firered', hex: '#ff8533', rgb: '255,133,51', shade: '#e0752d', tint: '#ff9147' },
     Leafgreen: { label: 'Leafgreen', hex: '#43cb5a', rgb: '67,203,90', shade: '#3bb34f', tint: '#56d06b' },
 }
+
+export const RaritiesList = [
+    'Promo',
+    'Common',
+    'Uncommon',
+    'Rare',
+    'Rare Holo',
+    'Rare Holo EX',
+    'Rare HOlo GX',
+    'Rare Holo LV.X',
+    'Rare Holo Star',
+    'Rare ACE',
+    'Rare BREAK',
+    'Rare Prime',
+    'Rare Prism Star',
+    'Rare Holo V',
+    'Rare Holo VMAX',
+    'Rare Holo VSTAR',
+    'Rare Rainbow',
+    'Rare Secret',
+    'Rare Shining',
+    'Rare Shiny',
+    'Rare Shiny GX',
+    'Rare Ultra',
+    'Amazing Rare',
+    'V',
+    'VM',
+    'Classic Collection',
+    'LEGEND',
+];

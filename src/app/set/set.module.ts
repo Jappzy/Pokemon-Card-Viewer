@@ -7,15 +7,13 @@ import { IonicModule } from '@ionic/angular';
 import { SetPageRoutingModule } from './set-routing.module';
 
 import { SetPage } from './set.page';
-import { FilterModalModule } from '../filter-modal/filter-modal.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SetPageRoutingModule,
-    FilterModalModule
+    SetPageRoutingModule
   ],
   declarations: [SetPage]
 })

@@ -1,3 +1,91 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-split-pane when="md" contentId="main">
+
+    <!--  the side menu  -->
+    <ion-menu contentId="main">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title style="padding: 0;">
+            <ion-searchbar placeholder="Search Sets" (ionChange)="searchChange($event)" debounce="200"></ion-searchbar>
+          </ion-title>
+          <ion-buttons slot="end">
+            <ion-button color="secondary" >
+              <ion-icon slot="icon-only" name="settings"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        
+        <ion-toolbar>
+          <ion-buttons style="width: 100%; display: flex; justify-content: space-around;">
+            <ion-button [color]="reverse ? 'primary' : 'medium'" (click)="toggleReverse()">
+              <ion-icon slot="icon-only" name="swap-vertical"></ion-icon>
+            </ion-button>
+            <ion-button [color]="useImage ? 'primary' : 'medium'" (click)="toggleImageView()">
+              <ion-icon slot="icon-only" name="image"></ion-icon>
+            </ion-button>
+            <ion-button id="series-button" color="primary">
+              <ion-icon slot="icon-only" name="layers"></ion-icon>
+            </ion-button>
+            <ion-popover trigger="series-button" showBackdrop="false">
+              <ng-template>
+                <ion-content>
+                  <ion-list *ngIf="reverse" lines="none">
+                    <ion-item *ngFor="let series of seriesOptionsReversed">
+                      <ion-checkbox [checked]="seriesSelection[series]" slot="start" (ionChange)="seriesChange(series)"></ion-checkbox>
+                      <ion-label>{{ series }}</ion-label>
+                    </ion-item>
+                  </ion-list>
+                  <ion-list *ngIf="!reverse" lines="none">
+                    <ion-item *ngFor="let series of seriesOptions">
+                      <ion-checkbox [checked]="seriesSelection[series]" slot="start" (ionChange)="seriesChange(series)"></ion-checkbox>
+                      <ion-label>{{ series }}</ion-label>
+                    </ion-item>
+                  </ion-list>
+                </ion-content>
+              </ng-template>
+            </ion-popover>
+            <ion-button id="play-button" color="primary">
+              <ion-icon slot="icon-only" name="server"></ion-icon>
+            </ion-button>
+            <ion-popover trigger="play-button" showBackdrop="false">
+              <ng-template>
+                <ion-content>
+                  <ion-list lines="none">
+                    <ion-radio-group [value]="legality" (ionChange)="legalityChange($event)">
+                      <ion-item>
+                        <ion-radio slot="start" value="standard"></ion-radio>
+                        <ion-label>Standard</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-radio slot="start" value="expanded"></ion-radio>
+                        <ion-label>Expanded</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-radio slot="start" value="unlimited"></ion-radio>
+                        <ion-label>Unlimited</ion-label>
+                      </ion-item>
+                    </ion-radio-group>
+                  </ion-list>
+                </ion-content>
+              </ng-template>
+            </ion-popover>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-list *ngIf="sets$ | async as sets" class="set-list" style="overflow-y: auto; margin-bottom: auto; padding-top: 0;">
+        <ion-item *ngFor="let set of sets" [routerLink]="'/set/' + set.id" [lines]="useImage ? 'none' : 'full'" routerLinkActive="active-set">
+          <ion-img *ngIf="!useImage" slot="start" [src]="set.images.symbol" style="max-width: 48px;"></ion-img>
+          <ion-label *ngIf="!useImage">
+            <h2>{{ set.name }}</h2>
+            <p>{{ set.releaseDate | date }}</p>
+          </ion-label>
+          <ion-img *ngIf="useImage" [src]="set.images.logo" style="max-height: 196px; padding: 16px 0; margin: auto;"></ion-img>
+        </ion-item>
+      </ion-list>
+    </ion-menu>
+  
+    <!-- the main content -->
+    <ion-router-outlet id="main"></ion-router-outlet>
+  </ion-split-pane>
 </ion-app>
