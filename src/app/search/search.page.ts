@@ -18,10 +18,9 @@ export class SearchPage {
   search(event: any) {
     const term = event.detail.value.trim();
     if (!term) {
-      this.results$ = of([]);
       return;
     }
-    this.results$ = this.cardService.search(term).pipe(map((res: any) => res.data));
+    this.results$ = this.cardService.search(term);
   }
 
 }

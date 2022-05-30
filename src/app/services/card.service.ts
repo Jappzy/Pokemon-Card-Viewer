@@ -62,8 +62,12 @@ export class CardService {
       );
   }
 
-  search(term: string): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${this.baseUrl}/cards?q=name:"${term}*"&pageSize=20`, this.headers);
+  search(term: string): Observable<Card[]> {
+    return this.http
+      .get<ApiResponse>(`${this.baseUrl}/cards?q=name:"${term}*"&pageSize=20`, this.headers)
+      .pipe(
+        map((res: ApiResponse) => res.data)
+      );
   }
 
   /* Deprecated save functionality */

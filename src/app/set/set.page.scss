@@ -43,3 +43,26 @@ ion-toggle::before {
 
     z-index: 1;
 }
+
+.loading-animation {
+    background-image: url("../../assets/pokemon-loading.gif");
+    background-position: center;
+    display: block;
+    margin: 20px auto 0;
+    border-radius: 50%;
+    height: 350px;
+    width: 350px;
+    max-width: 100%;
+}
+
+.price-link {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 0;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

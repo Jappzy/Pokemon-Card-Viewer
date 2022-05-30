@@ -51,8 +51,7 @@ export class CardPage implements OnInit {
   loadRelated() {
     this.showRelated = true;
     this.relatedCards$ = this.cardService
-      .search(this.card.evolvesFrom?.split(' ')[0] || this.card.name.split(' ')[0])
-      .pipe(map((res: ApiResponse) => res.data));
+      .search(this.card.evolvesFrom?.split(' ')[0] || this.card.name.split(' ')[0]);
   }
 
 }

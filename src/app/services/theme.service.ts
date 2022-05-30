@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Plugins } from '@capacitor/core';
+import { Subject } from 'rxjs';
 import { Theme } from '../types';
 
 const { Storage } = Plugins;
@@ -8,6 +9,8 @@ const { Storage } = Plugins;
   providedIn: 'root'
 })
 export class ThemeService {
+
+  dark$: Subject<boolean> = new Subject();
 
   constructor() { }
 
@@ -34,6 +37,7 @@ export class ThemeService {
       key: 'darkMode',
       value: enabled ? 'enabled' : ''
     });
+    this.dark$.next(enabled);
   }
 
   applyTheme({ hex, rgb, shade, tint }: Theme) {

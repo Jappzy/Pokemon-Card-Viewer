@@ -1,9 +1,46 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Welcome!</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+
+  <ion-menu-button class="ion-hide-lg-up" class="menu-btn"></ion-menu-button>
+
+  <div class="top-section">
+
+    <div class="copy">
+      <h1>Plain Pokemon Cards</h1>
+      <p class="subtitle">A simple and efficient application for viewing Pokemon cards and sorting through all kinds of data.</p>
+      <div class="cta">
+        <ion-button color="primary" (click)="navigateToRandomSet()">Show Me A Random Set</ion-button>
+      </div>
+    </div>
+
+    <div class="media">
+      <div class="top-bg-container">
+        <img *ngIf="!dark" class="top-bg-image" src="assets/header-illustration-light.svg" alt="Top Background Illustration">
+        <img *ngIf="dark" class="top-bg-image" src="assets/header-illustration-dark.svg" alt="Top Background Illustration">
+      </div>
+      <div class="bg-container">
+        <img *ngIf="!dark" class="bg-image" src="assets/home-bg-light.svg" alt="Background Illustration">
+        <img *ngIf="dark" class="bg-image" src="assets/home-bg-dark.svg" alt="Background Illustration">
+      </div>
+      <div class="screenshot-container">
+        <img *ngIf="!dark" class="screenshot-image" src="assets/light-full-transparent.png" alt="Screenshot">
+        <img *ngIf="dark" class="screenshot-image" src="assets/dark-full.jpg" alt="Screenshot">
+      </div>
+    </div>
+
+  </div>
+
+  <div class="middle-section">
+
+    <h2>Vintage to Modern</h2>
+    <p class="subtitle">and everything in between</p>
+
+    <div class="carousel">
+      <img *ngFor="let card of cards" [src]="card.image" alt="card" class="carousel-item">
+    </div>
+  </div>
+
+  <!-- <div class="bottom-section">
+    <p>Copyright &copy; Plain Pokemon Cards 2022</p>
+  </div> -->
 
 </ion-content>

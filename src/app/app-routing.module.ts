@@ -19,11 +19,16 @@ const routes: Routes = [
     loadChildren: () => import('./card/card.module').then( m => m.CardPageModule)
   },
   {
+    path: 'search',
+    loadChildren: () => import('./search/search.module').then( m => m.SearchPageModule)
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full'
   },
 ];
+
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })

@@ -1,16 +1,17 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Search</ion-title>
-  </ion-toolbar>
-  <ion-toolbar>
-    <ion-searchbar placeholder="Pokemon Name..." debounce="1000" (ionChange)="search($event)"></ion-searchbar>
+    <ion-buttons class="ion-hide-lg-up" slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-searchbar placeholder="Search..." debounce="1000" (ionChange)="search($event)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-  <ion-card *ngFor="let card of results$ | async" [routerLink]="'/card/' + card.id" [state]="{ data: card }"  style="width: 600px; max-width: 95%; margin: 8px auto;">
-    <ion-img [src]="card.images.large"></ion-img>
+  <!-- [routerLink]="'/card/' + card.id" [state]="{ data: card }" -->
+  <ion-card *ngFor="let card of results$ | async">
+    <ion-img [src]="card.images.small"></ion-img>
   </ion-card>
 
 </ion-content>

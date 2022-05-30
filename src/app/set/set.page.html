@@ -12,8 +12,8 @@
       </ion-text>
     </ion-title>
 
-    <ion-buttons *ngIf="set" slot="start">
-      <ion-menu-button class="ion-hide-md-up"></ion-menu-button>
+    <ion-buttons *ngIf="set" slot="start" class="ion-hide-md-up">
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
 
     <ion-buttons *ngIf="set" slot="end">
@@ -48,6 +48,8 @@
 
 <ion-content>
 
+  <div *ngIf="!set" class="loading-animation"></div>
+
   <h2 *ngIf="set" class="ion-hide-md-up" style="font-weight: 700; font-size: 22px; margin: 12px 12px 0px;">{{ set.name }}</h2>
 
   <div class="card-container">
@@ -55,10 +57,15 @@
       <!-- [routerLink]="'/card/' + card.id" [state]="{ data: card }" -->
       <ion-img [src]="card.images.small" (ionImgDidLoad)="imageLoaded(card.id)"></ion-img>
       <img *ngIf="!loadedImages[card.id]" src="assets/pokemon-card-placeholder.png" width="240" />
-      <div *ngIf="showPrice" style="text-align: center; padding: 4px;">
-        <a *ngIf="card.tcgplayer?.url" [href]="card.tcgplayer.url" target="_blank">{{ priceLabel(card) | currency }}</a>
-        <a *ngIf="!card.tcgplayer && card.cardmarket?.url" [href]="card.cardmarket.url" target="_blank">{{ priceLabel(card) | currency }}</a>
-      </div>
+      <a
+        *ngIf="showPrice && (card.tcgplayer?.url || card.cardmarket?.url)"
+        [href]="card.tcgplayer?.url || card.cardmarket?.url"
+        target="_blank"
+        class="price-link"
+      >
+        {{ priceLabel(card) | currency }}
+        <ion-icon name="open-outline"></ion-icon>
+      </a>
     </ion-card>
   </div>
 

@@ -113,6 +113,12 @@ export class AppComponent implements OnInit {
     this.useImage = !this.useImage;
     localStorage.setItem('useImage', `${this.useImage}`);
   }
+  
+  async toggleDarkMode() {
+    const dark = await this.themeService.getDarkMode();
+    await this.themeService.saveDarkMode(!dark);
+    document.body.classList.toggle('dark');
+  }
 
   handleServiceWorkerUpdates() {
     this.swUpdates.versionUpdates.subscribe(async (evt: VersionEvent) => {
